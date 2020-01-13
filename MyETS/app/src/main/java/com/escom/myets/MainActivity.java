@@ -5,10 +5,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
@@ -19,20 +19,20 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends Activity {
-//    private final String DEVICE_NAME="MyBTBee";
-    private final String DEVICE_ADDRESS="98:D3:21:FC:81:D4";
+    private final String DEVICE_ADDRESS="98:D3:21:FC:81:D4"; //MAC HC-05
     private final UUID PORT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");//Serial Port Service ID
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
-    Button startButton, clearButton, stopButton;
+    Button startButton, clearButton, stopButton, tempButton;
     TextView textView;
     boolean deviceConnected=false;
-    Thread thread;
+   // Thread thread;
     byte buffer[];
-    int bufferPosition;
+    //int bufferPosition;
     boolean stopThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,17 +40,17 @@ public class MainActivity extends Activity {
         startButton = (Button) findViewById(R.id.buttonStart);
         clearButton = (Button) findViewById(R.id.buttonClear);
         stopButton = (Button) findViewById(R.id.buttonStop);
+        tempButton = (Button) findViewById(R.id.buttonTemp);
         textView = (TextView) findViewById(R.id.textView);
         setUiEnabled(false);
-
     }
 
     public void setUiEnabled(boolean bool)
     {
         startButton.setEnabled(!bool);
         stopButton.setEnabled(bool);
+        tempButton.setEnabled(bool);
         textView.setEnabled(bool);
-
     }
 
     public boolean BTinit()
@@ -112,10 +112,7 @@ public class MainActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
-
         return connected;
     }
 
@@ -128,7 +125,6 @@ public class MainActivity extends Activity {
                 deviceConnected=true;
                 beginListenForData();
                 Toast.makeText(getApplicationContext(),"Online",Toast.LENGTH_SHORT).show();
-               // textView.setText("Online!");
             }
 
         }
@@ -153,11 +149,19 @@ public class MainActivity extends Activity {
                             byte[] rawBytes = new byte[byteCount];
                             inputStream.read(rawBytes);
                            final String string=new String(rawBytes,"UTF-8");
-                            if (string.trim().length() != 0){
+                            if (string.trim().length() != 0 && string.trim().length() < 8 ){
+                                Double d1 = Double.parseDouble(string.trim());
+                                if (Double.compare(d1,10.0) < 0)
+                                    textView.setTextColor(Color.BLUE);
+                                else if (Double.compare(d1,30.0) > 0)
+                                    textView.setTextColor(Color.RED);
+                                else
+                                    textView.setTextColor(Color.DKGRAY);
+
                                 handler.post(new Runnable() {
                                     public void run()
                                     {
-                                        textView.setText(string);
+                                        textView.setText(string+"ºC");
                                     }
                                 });
                             }
@@ -189,6 +193,19 @@ public class MainActivity extends Activity {
     //limpia el texto en pantalla
     public void onClickClear(View view) {
         textView.setText("");
+        textView.setTextColor(Color.DKGRAY);
         Toast.makeText(getApplicationContext(),"Clear",Toast.LENGTH_SHORT).show();
+    }
+
+    public void onClickTemp(View view) {
+        String string = "t\n";
+        try {
+            outputStream.write(string.getBytes());
+            textView.setTextColor(Color.GREEN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(getApplicationContext(),"Read Ambient Temp",Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -9,7 +9,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Begin"
+        android:text="@string/button_connect"
         android:id="@+id/buttonStart"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -22,14 +22,14 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:textColor="@color/colorPrimary"
-        android:textSize="30dp"
-        android:text="-"
+        android:textSize="48dp"
+        android:text="Temp"
         android:singleLine="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
+        android:text="@string/button_disconnect"
         android:id="@+id/buttonStop"
         android:layout_toRightOf="@+id/buttonStart"
         android:layout_toEndOf="@+id/buttonStart"
@@ -38,9 +38,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear"
+        android:text="@string/button_clear"
         android:id="@+id/buttonClear"
         android:layout_toRightOf="@+id/buttonStop"
         android:layout_toEndOf="@+id/buttonStop"
         android:onClick="onClickClear"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_temp"
+        android:id="@+id/buttonTemp"
+        android:layout_toRightOf="@+id/buttonClear"
+        android:layout_toEndOf="@+id/buttonClear"
+        android:onClick="onClickTemp"/>
 </RelativeLayout>
