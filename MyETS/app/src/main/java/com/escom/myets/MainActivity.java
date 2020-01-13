@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
         socket.close();
         setUiEnabled(false);
         deviceConnected=false;
-        textView.setText("-");
+        textView.setText("Temp");
         Toast.makeText(getApplicationContext(),"Offline",Toast.LENGTH_SHORT).show();
     }
 
